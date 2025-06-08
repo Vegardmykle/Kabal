@@ -1,3 +1,7 @@
+
+import java.util.ArrayList;
+import java.util.HashMap;
+
 public final class Kabal{
     private KortStokk kortStokk = new KortStokk(); 
     private Kort[][] start = start(kortStokk);
@@ -7,18 +11,17 @@ public final class Kabal{
         skjulK();
         bunke = trekkKortBunke();
     }
-    public Kort[] rad(int rNr){
-        Kort rad[] = new Kort[rNr];
+    public ArrayList rad(int rNr){
+        ArrayList<Kort> rad= new ArrayList<>();
+
         for (int i = 0; i < rNr; i++) {
-            rad[i] = kortStokk.trekkKort();
+            rad.add(kortStokk.trekkKort()); 
         }
-
-
         return rad;
     }
     //skal bare kalles en gang
-    public Kort[][] start(KortStokk s){
-        Kort spill[][] = new Kort[7][];
+    public ArrayList[] start(KortStokk s){
+        ArrayList spill[] = new ArrayList[7];
         for (int i = 0; i < 7; i++) {
             spill[i] = rad(i+1);
         }
