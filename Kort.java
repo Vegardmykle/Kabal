@@ -10,6 +10,7 @@ public class Kort {
     private String denneRank;
     private String denneFarge;
     private ImageIcon bilde;
+    private String bakside= "#";
 
     public Kort(String rank, String farge) {
         this.denneFarge = farge.toLowerCase();
@@ -72,6 +73,9 @@ public class Kort {
     @Override
     public String toString() {
         return denneRank + " " + denneFarge;
+    }
+    public String getBakside(){
+        return bakside;
     }
     
     public ImageIcon getBilde() {
