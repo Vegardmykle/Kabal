@@ -4,7 +4,7 @@ import java.util.HashMap;
 
 public final class Kabal{
     private KortStokk kortStokk = new KortStokk(); 
-    private Kort[][] start = start(kortStokk);
+    private ArrayList[] start = start(kortStokk);
     private Kort[] bunke;
     private int bKNr;
     public Kabal(){
