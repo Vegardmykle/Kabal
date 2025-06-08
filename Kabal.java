@@ -2,6 +2,7 @@ public final class Kabal{
     private KortStokk kortStokk = new KortStokk(); 
     private Kort[][] start = start(kortStokk);
     private Kort[] bunke;
+    private int bKNr;
     public Kabal(){
         skjulK();
         bunke = trekkKortBunke();
@@ -50,13 +51,25 @@ public final class Kabal{
         return bunke;
     }
 
+    public void trekk3Kort(){
+        if(bKNr>=bunke.length-1){
+            bKNr=0;
+        }
+        if(bKNr==0) bKNr+=2;
+        else bKNr+=3;
+        System.out.println(bunke[bKNr].toString());
+    }
+
     
 
     public static void main(String[] args) {
-        Kabal k = new Kabal();
-        for (Kort kort : k.hentBunke()) {
+        Kabal kabal = new Kabal();
+        
+        for (Kort kort : kabal.hentBunke()) {
             System.out.println(kort.toString());
         }
+        System.out.println("++");
+        kabal.trekk3Kort();
     }
        
 }
