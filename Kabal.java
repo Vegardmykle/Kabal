@@ -1,6 +1,5 @@
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public final class Kabal{
     private KortStokk kortStokk = new KortStokk(); 
@@ -31,11 +30,15 @@ public final class Kabal{
 
     public void skjulK(){
         for(int i = 0; i<start.length;i++){
-            for (int z = 0;z<start[i].length;z++){
-                if(start[i].length-1!=z)
-                    System.out.print(start[i][z].getBakside() +" ");
+            ArrayList arr;
+            for (int z = 0;z<start[i].size();z++){
+                if(start[i].size()-1!=z){
+                    arr= start[i];
+                    Kort k = (Kort) arr.get(z);
+                    System.out.print(k.getBakside() +" ");
+                }
                 else
-                    System.out.print(start[i][z].toString() +" ");
+                    System.out.print(start[i].get(z).toString() +" ");
                 
             }
             System.out.println("\n");
