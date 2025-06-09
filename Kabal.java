@@ -36,15 +36,30 @@ public final class Kabal{
 
 
     public void skjulK(){
-        System.out.println("\n----- KABAL -----");
+        System.out.print("\033[H\033[2J");
+        System.out.flush();
+        System.out.println("==================== K A B A L ====================");
+        System.out.println("Rad   Kort");
+        System.out.println("--------------------------------------------------");
+        
         for(int i = 0; i<brett.length;i++){
+
+            System.out.printf("%-2d:  ", i);
             for (int z = 0;z<brett[i].size();z++){
                 Kort k = brett[i].get(z);
+                
                 if(brett[i].size()-1!=z&&!k.visesForside()){
                     System.out.print(k.getBakside() +" ");
                 }
                 else{
-                    System.out.print(k.toString() + " ");
+                    String fargeKode = "";
+                    if (k.hentSort().equals("hearts") || k.hentSort().equals("diamonds")) {
+                        fargeKode = "\u001B[31m"; // Rød tekst
+                    } else {
+                        fargeKode = "\u001B[30m"; // Svart tekst
+                    }
+                    System.out.print(fargeKode + k.toString() + "\u001B[0m ");
+
                     k.settSynlig(true);
                 }
                 
