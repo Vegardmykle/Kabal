@@ -6,7 +6,7 @@ import java.util.ArrayList;
 public class KortStokk{
 
     private String[] sortene = {"hearts","clubs","diamonds","spades"};
-    private String[] tallene = {"2","3","4","5","6","7","8","9","10","J","Q","K","A"};
+    private String[] tallene = {"A","2","3","4","5","6","7","8","9","10","J","Q","K"};
     private ArrayList<Kort> kortene = new ArrayList<>();
     ArrayList<Kort> blanda = new ArrayList<>();
     public KortStokk(){
@@ -33,4 +33,11 @@ public class KortStokk{
     public Kort trekkKort(){
         return blanda.removeFirst();
     }
+    public String[] hentSortene(){
+        return sortene;
+    }
+    public String[] hentTallene(){
+        return tallene;
+    }
+    
 }

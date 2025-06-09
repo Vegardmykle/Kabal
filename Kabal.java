@@ -3,9 +3,9 @@ import java.util.ArrayList;
 
 public final class Kabal{
     private KortStokk kortStokk = new KortStokk(); 
-    private ArrayList[] start = start(kortStokk);
+    private ArrayList[] brett = start(kortStokk);
     private Kort[] bunke;
-    private int bKNr;
+
     public Kabal(){
         skjulK();
         bunke = trekkKortBunke();
@@ -28,17 +28,18 @@ public final class Kabal{
         return spill;
     }
 
+    private int bKNr;
     public void skjulK(){
-        for(int i = 0; i<start.length;i++){
+        for(int i = 0; i<brett.length;i++){
             ArrayList arr;
-            for (int z = 0;z<start[i].size();z++){
-                if(start[i].size()-1!=z){
-                    arr= start[i];
+            for (int z = 0;z<brett[i].size();z++){
+                if(brett[i].size()-1!=z){
+                    arr= brett[i];
                     Kort k = (Kort) arr.get(z);
                     System.out.print(k.getBakside() +" ");
                 }
                 else
-                    System.out.print(start[i].get(z).toString() +" ");
+                    System.out.print(brett[i].get(z).toString() +" ");
                 
             }
             System.out.println("\n");
@@ -65,6 +66,30 @@ public final class Kabal{
         else bKNr+=3;
         System.out.println(bunke[bKNr].toString());
     }
+    String[] sortene = {"hearts","clubs","diamonds","spades"};
+    String[] tallene = {"A","2","3","4","5","6","7","8","9","10","J","Q","K"};
+
+    public boolean sjekkPlassLov(Kort k, int rad){
+        Kort siste = (Kort) brett[rad].getLast();
+        String farge1;
+        String farge2;
+        farge1 = switch (siste.hentSort()) {
+            case "hearts" -> "rød";
+            case "diamonds" -> "rød";
+            default -> "sort";
+        };
+        farge2 = switch (k.hentSort()) {
+            case "hearts" -> "rød";
+            case "diamonds" -> "rød";
+            default -> "sort";
+        };
+        boolean tall; 
+        tall =siste.verdi()-1== k.verdi();
+        boolean farge;
+        farge =!farge1.equals(farge2); 
+
+        return tall && farge;
+    } 
 
     
 
