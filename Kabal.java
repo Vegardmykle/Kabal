@@ -33,22 +33,26 @@ public final class Kabal{
         return spill;
     }
 
-    
+
+
     public void skjulK(){
+        System.out.println("\n----- KABAL -----");
         for(int i = 0; i<brett.length;i++){
             for (int z = 0;z<brett[i].size();z++){
                 Kort k = brett[i].get(z);
-                if(brett[i].size()-1!=z){
+                if(brett[i].size()-1!=z&&!k.visesForside()){
                     System.out.print(k.getBakside() +" ");
                 }
-                else
+                else{
                     System.out.print(k.toString() + " ");
+                    k.settSynlig(true);
+                }
                 
             }
             System.out.println("\n");
         }
     }
-
+    
     // må skje etter at kabal er lagt
     public ArrayList<Kort> trekkKortBunke(){
         ArrayList<Kort> bunke = new ArrayList<>();
@@ -101,10 +105,12 @@ public final class Kabal{
             System.out.println("ulovlig plassering!");
             return;
         }
-
+        kortFB.settSynlig(true);
         brett[hvor].add(kortFB);
         bunke.remove(kortFB);
         kortFB = null;
+
+
         bKNr = bunke.isEmpty() ? -1 : Math.min(bKNr, bunke.size() - 1);
 
     }

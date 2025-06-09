@@ -11,6 +11,7 @@ public class Kort {
     private String denneFarge;
     private ImageIcon bilde;
     private String bakside= "#";
+    private boolean visForside = false;
 
     public Kort(String rank, String farge) {
         this.denneFarge = farge.toLowerCase();
@@ -37,6 +38,12 @@ public class Kort {
     }
     public String hentSort(){
         return denneFarge;
+    }
+    public boolean visesForside(){
+        return visForside;
+    }
+    public void settSynlig(boolean b){
+        visForside = b;
     }
 
     public ImageIcon hentBilde() {
