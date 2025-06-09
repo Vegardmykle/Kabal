@@ -90,7 +90,7 @@ public final class Kabal{
             if(sjekk) trekk3Kort();
             if(neste.equals("plasser")) {
                 plasserKortB();
-                sjekk = false;
+                sjekk= true;
             }
         }
     }
