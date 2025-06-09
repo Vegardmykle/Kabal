@@ -1,16 +1,20 @@
 
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public final class Kabal{
     private KortStokk kortStokk = new KortStokk(); 
-    private ArrayList[] brett = start(kortStokk);
-    private Kort[] bunke;
+    private ArrayList<Kort>[] brett = start(kortStokk);
+    private ArrayList<Kort> bunke;
+
+    private int bKNr = -1;
+    private Kort kortFB;
 
     public Kabal(){
         skjulK();
         bunke = trekkKortBunke();
     }
-    public ArrayList rad(int rNr){
+    public ArrayList<Kort> rad(int rNr){
         ArrayList<Kort> rad= new ArrayList<>();
 
         for (int i = 0; i < rNr; i++) {
@@ -19,8 +23,9 @@ public final class Kabal{
         return rad;
     }
     //skal bare kalles en gang
-    public ArrayList[] start(KortStokk s){
-        ArrayList spill[] = new ArrayList[7];
+    @SuppressWarnings("unchecked")
+    public ArrayList<Kort>[] start(KortStokk s){
+        ArrayList<Kort> spill[] = new ArrayList[7];
         for (int i = 0; i < 7; i++) {
             spill[i] = rad(i+1);
         }
@@ -28,18 +33,16 @@ public final class Kabal{
         return spill;
     }
 
-    private int bKNr;
+    
     public void skjulK(){
         for(int i = 0; i<brett.length;i++){
-            ArrayList arr;
             for (int z = 0;z<brett[i].size();z++){
+                Kort k = brett[i].get(z);
                 if(brett[i].size()-1!=z){
-                    arr= brett[i];
-                    Kort k = (Kort) arr.get(z);
                     System.out.print(k.getBakside() +" ");
                 }
                 else
-                    System.out.print(brett[i].get(z).toString() +" ");
+                    System.out.print(k.toString() + " ");
                 
             }
             System.out.println("\n");
@@ -47,60 +50,100 @@ public final class Kabal{
     }
 
     // må skje etter at kabal er lagt
-    public Kort[] trekkKortBunke(){
-        Kort[] bunke = new Kort[24];
+    public ArrayList<Kort> trekkKortBunke(){
+        ArrayList<Kort> bunke = new ArrayList<>();
+
         for(int i =0; i<24;i++){
-            bunke[i] = kortStokk.trekkKort();
+            bunke.add(kortStokk.trekkKort());
         }
         return bunke;
     }
-    public Kort[] hentBunke(){
+    public ArrayList<Kort> hentBunke(){
         return bunke;
     }
-
+    
     public void trekk3Kort(){
-        if(bKNr>=bunke.length-1){
-            bKNr=0;
+        if (bunke.isEmpty()) {
+            System.out.println("Bunken er tom!");
+            kortFB = null;
+            return;
         }
-        if(bKNr==0) bKNr+=2;
-        else bKNr+=3;
-        System.out.println(bunke[bKNr].toString());
-    }
-    String[] sortene = {"hearts","clubs","diamonds","spades"};
-    String[] tallene = {"A","2","3","4","5","6","7","8","9","10","J","Q","K"};
 
+        if (bKNr >= bunke.size() - 1) {
+            bKNr = -1;
+        }
+        
+
+        bKNr = (bKNr + 3) % bunke.size();
+        kortFB = bunke.get(bKNr);
+        System.out.println("Trukket kort: " + kortFB.toString());
+    }
+
+    Scanner sc = new Scanner(System.in);
+    public void trekk3KortB(){
+        boolean sjekk = true;
+        while(sjekk){
+            System.out.println("vil du trekke kort(ja/nei/plasser)");
+            String neste = sc.next();
+            sjekk = neste.equals("ja");
+            skjulK();
+            if(sjekk) trekk3Kort();
+            if(neste.equals("plasser")) {
+                plasserKortB();
+                sjekk = false;
+            }
+        }
+    }
+    public void plasserKortB(){
+        System.out.println("hvor vil du plassere(radNr 0-6)");
+        int hvor = sc.nextInt();
+        if(!sjekkPlassLov(kortFB, hvor)){
+            System.out.println("ulovlig plassering!");
+            return;
+        }
+
+        brett[hvor].add(kortFB);
+        bunke.remove(kortFB);
+        kortFB = null;
+        bKNr = bunke.isEmpty() ? -1 : Math.min(bKNr, bunke.size() - 1);
+
+    }
+
+    String[] sortene = {"hearts","clubs","diamonds","spades"};
     public boolean sjekkPlassLov(Kort k, int rad){
-        Kort siste = (Kort) brett[rad].getLast();
+        if(rad<0||rad>6) return false;
+
+        if (brett[rad].isEmpty()) {
+            return "K".equals(k.hentRank());
+        }
+
+        Kort siste = brett[rad].get(brett[rad].size() - 1);
+
         String farge1;
         String farge2;
         farge1 = switch (siste.hentSort()) {
-            case "hearts" -> "rød";
-            case "diamonds" -> "rød";
-            default -> "sort";
+            case "hearts","diamonds" -> "rød";
+            case "clubs","spades" -> "sort";
+            default -> "ukjent";
         };
         farge2 = switch (k.hentSort()) {
-            case "hearts" -> "rød";
-            case "diamonds" -> "rød";
-            default -> "sort";
+            case "hearts","diamonds" -> "rød";
+            case "clubs","spades" -> "sort";
+            default -> "ukjent";
         };
-        boolean tall; 
-        tall =siste.verdi()-1== k.verdi();
-        boolean farge;
-        farge =!farge1.equals(farge2); 
 
-        return tall && farge;
+        boolean fargeOk =!farge1.equals(farge2); 
+        boolean tallOk =(siste.verdi() - 1 == k.verdi());   
+        return tallOk && fargeOk;
     } 
 
     
 
     public static void main(String[] args) {
         Kabal kabal = new Kabal();
+        kabal.trekk3KortB();
         
-        for (Kort kort : kabal.hentBunke()) {
-            System.out.println(kort.toString());
-        }
-        System.out.println("++");
-        kabal.trekk3Kort();
+
     }
        
 }
