@@ -7,11 +7,16 @@ public final class Kabal{
     private ArrayList<Kort>[] brett = start(kortStokk);
     private ArrayList<Kort> bunke = new ArrayList<>();
 
+    private ArrayList<Kort> heartsM = new ArrayList<>();
+    private ArrayList<Kort> clubsM = new ArrayList<>();
+    private ArrayList<Kort> diamondsM = new ArrayList<>();
+    private ArrayList<Kort> spadesM = new ArrayList<>();
+
     private int bKNr = -1;
     private Kort kortFB;
 
     public Kabal(){
-        skjulK();
+        visKabal();
         bunke = trekkKortBunke();
     }
     public ArrayList<Kort> rad(int rNr){
@@ -35,12 +40,13 @@ public final class Kabal{
 
 
 
-   public void skjulK() {
+   public void visKabal() {
     System.out.print("\033[H\033[2J");
     System.out.flush();
     System.out.println("==================== K A B A L ====================");
     
     // Vis bunken
+    //brukte gpt for å få fin visning
     System.out.println("Bunke: " + (bunke.isEmpty() ? "Tom" : bunke.size() + " kort igjen"));
     if (kortFB != null) {
         String fargeKode = (kortFB.hentSort().equals("hearts") || kortFB.hentSort().equals("diamonds")) 
@@ -49,9 +55,15 @@ public final class Kabal{
     }
     System.out.println("--------------------------------------------------");
     
+    System.out.println("Mål stabler" );
+    System.out.print((heartsM.isEmpty() ? "Tom  " : heartsM.getLast()+ " "));
+    System.out.print((clubsM.isEmpty() ? "Tom  " : clubsM.getLast()+ " "));
+    System.out.print((diamondsM.isEmpty() ? "Tom  " : diamondsM.getLast()+ " "));
+    System.out.print((spadesM.isEmpty() ? "Tom\n" : spadesM.getLast()+"\n"));
+    System.out.println("--------------------------------------------------");
     System.out.println("Rad   Kort");
     System.out.println("--------------------------------------------------");
-    
+    //brukt gpt for fin fargevisning
     for(int i = 0; i < brett.length; i++) {
         System.out.printf("%-2d:  ", i);
         for (int z = 0; z < brett[i].size(); z++) {
@@ -128,7 +140,7 @@ public final class Kabal{
             else {
                 System.out.println("Ugyldig valg!");
             }
-            skjulK();
+            visKabal();
             
         }
     }
@@ -192,7 +204,10 @@ public final class Kabal{
             brett[radP].addAll(flyttet);
         }
     }
+    
+    public void målStabler(){
 
+    }
     String[] sortene = {"hearts","clubs","diamonds","spades"};
     public boolean sjekkPlassLov(Kort k, int rad){
         if(rad<0||rad>6) return false;
