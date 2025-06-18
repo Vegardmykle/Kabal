@@ -1,5 +1,6 @@
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Scanner;
 
 public final class Kabal{
@@ -11,11 +12,15 @@ public final class Kabal{
     private ArrayList<Kort> clubsM = new ArrayList<>();
     private ArrayList<Kort> diamondsM = new ArrayList<>();
     private ArrayList<Kort> spadesM = new ArrayList<>();
-
+    private final HashMap<String, ArrayList<Kort>> målStabler = new HashMap<>();
     private int bKNr = -1;
     private Kort kortFB;
 
     public Kabal(){
+        målStabler.put("hearts", heartsM);
+        målStabler.put("clubs", clubsM);
+        målStabler.put("diamonds", diamondsM);
+        målStabler.put("spades", spadesM);
         visKabal();
         bunke = trekkKortBunke();
     }
@@ -121,24 +126,29 @@ public final class Kabal{
     public void brukerinput(){
         boolean sjekk = true;
         while(sjekk) {
-            System.out.println("vil du trekke kort(ja/nei/plasser/flytteMellom)");
+            System.out.println("vil du trekke kort(ja/nei/plasser/flytteMellom//LeggeMål)");
             String neste = sc.next();
             
-            if(neste.equals("ja")) {
-                trekk3Kort();
-            }
-            else if(neste.equals("plasser")) {
-                plasserKortB();
-            }
-            else if(neste.equals("flytteMellom")) {
-                flyttKortMellomBunker();
-            }
-            else if(neste.equals("nei")) {
-                sjekk = false;
-                continue;
-            }
-            else {
-                System.out.println("Ugyldig valg!");
+            switch (neste) {
+                case "ja":
+                    trekk3Kort();
+                    break;
+                case "plasser":
+                    plasserKortB();
+                    break;
+                case "flytteMellom":
+                    flyttKortMellomBunker();
+                    break;
+                case "LeggeMål":
+                    målStabler();
+                    break;
+                case "nei":
+                    sjekk = false;
+                    continue;
+                
+                default:
+                    System.out.println("Ugyldig valg!");
+                    break;
             }
             visKabal();
             
@@ -206,7 +216,30 @@ public final class Kabal{
     }
     
     public void målStabler(){
+        System.out.println("hvilken rad?(0-6)");
+        int rad = sc.nextInt();
+        while (rad < 0 || rad > 6) {
+            System.out.println("ugyldig rad!");
+            System.out.println("hvilken rad?(0-6)");
+            rad = sc.nextInt();
+        }
+        Kort kort = brett[rad].getLast();
+        if(sjekkMålLov(kort)){
+            målStabler.get(kort.hentSort()).add(brett[rad].removeLast());
+        }
 
+    }
+    private boolean sjekkMålLov(Kort k) {
+        if (k == null) return false;
+    
+        ArrayList<Kort> målStabel = målStabler.get(k.hentSort());
+        if (målStabel == null) return false;
+    
+        if (målStabel.isEmpty()) {
+            return k.verdi() == 1;
+        }
+    
+        return målStabel.get(målStabel.size() - 1).verdi() == k.verdi() - 1;
     }
     String[] sortene = {"hearts","clubs","diamonds","spades"};
     public boolean sjekkPlassLov(Kort k, int rad){
