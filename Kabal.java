@@ -5,7 +5,7 @@ import java.util.Scanner;
 public final class Kabal{
     private KortStokk kortStokk = new KortStokk(); 
     private ArrayList<Kort>[] brett = start(kortStokk);
-    private ArrayList<Kort> bunke;
+    private ArrayList<Kort> bunke = new ArrayList<>();
 
     private int bKNr = -1;
     private Kort kortFB;
@@ -35,42 +35,49 @@ public final class Kabal{
 
 
 
-    public void skjulK(){
-        System.out.print("\033[H\033[2J");
-        System.out.flush();
-        System.out.println("==================== K A B A L ====================");
-        System.out.println("Rad   Kort");
-        System.out.println("--------------------------------------------------");
-        
-        for(int i = 0; i<brett.length;i++){
-
-            System.out.printf("%-2d:  ", i);
-            for (int z = 0;z<brett[i].size();z++){
-                Kort k = brett[i].get(z);
-                
-                if(brett[i].size()-1!=z&&!k.visesForside()){
-                    System.out.print(k.getBakside() +" ");
-                }
-                else{
-                    String fargeKode = "";
-                    if (k.hentSort().equals("hearts") || k.hentSort().equals("diamonds")) {
-                        fargeKode = "\u001B[31m"; // Rød tekst
-                    } else {
-                        fargeKode = "\u001B[30m"; // Svart tekst
-                    }
-                    System.out.print(fargeKode + k.toString() + "\u001B[0m ");
-
-                    k.settSynlig(true);
-                }
-                
-            }
-            System.out.println("\n");
-        }
+   public void skjulK() {
+    System.out.print("\033[H\033[2J");
+    System.out.flush();
+    System.out.println("==================== K A B A L ====================");
+    
+    // Vis bunken
+    System.out.println("Bunke: " + (bunke.isEmpty() ? "Tom" : bunke.size() + " kort igjen"));
+    if (kortFB != null) {
+        String fargeKode = (kortFB.hentSort().equals("hearts") || kortFB.hentSort().equals("diamonds")) 
+            ? "\u001B[31m" : "\u001B[30m";
+        System.out.println("Sist trukket: " + fargeKode + kortFB.toString() + "\u001B[0m");
     }
+    System.out.println("--------------------------------------------------");
+    
+    System.out.println("Rad   Kort");
+    System.out.println("--------------------------------------------------");
+    
+    for(int i = 0; i < brett.length; i++) {
+        System.out.printf("%-2d:  ", i);
+        for (int z = 0; z < brett[i].size(); z++) {
+            Kort k = brett[i].get(z);
+            
+            if(brett[i].size()-1 != z && !k.visesForside()) {
+                System.out.print(k.getBakside() + " ");
+            }
+            else {
+                String fargeKode = "";
+                if (k.hentSort().equals("hearts") || k.hentSort().equals("diamonds")) {
+                    fargeKode = "\u001B[31m"; // Rød tekst
+                } else {
+                    fargeKode = "\u001B[30m"; // Svart tekst
+                }
+                System.out.print(fargeKode + k.toString() + "\u001B[0m ");
+                
+                k.settSynlig(true);
+            }
+        }
+        System.out.println("\n");
+    }
+}
     
     // må skje etter at kabal er lagt
     public ArrayList<Kort> trekkKortBunke(){
-        ArrayList<Kort> bunke = new ArrayList<>();
 
         for(int i =0; i<24;i++){
             bunke.add(kortStokk.trekkKort());
@@ -99,18 +106,30 @@ public final class Kabal{
     }
 
     Scanner sc = new Scanner(System.in);
-    public void trekk3KortB(){
+    public void brukerinput(){
         boolean sjekk = true;
-        while(sjekk){
-            System.out.println("vil du trekke kort(ja/nei/plasser)");
+        while(sjekk) {
+            System.out.println("vil du trekke kort(ja/nei/plasser/flytteMellom)");
             String neste = sc.next();
-            sjekk = neste.equals("ja");
-            skjulK();
-            if(sjekk) trekk3Kort();
-            if(neste.equals("plasser")) {
-                plasserKortB();
-                sjekk= true;
+            
+            if(neste.equals("ja")) {
+                trekk3Kort();
             }
+            else if(neste.equals("plasser")) {
+                plasserKortB();
+            }
+            else if(neste.equals("flytteMellom")) {
+                flyttKortMellomBunker();
+            }
+            else if(neste.equals("nei")) {
+                sjekk = false;
+                continue;
+            }
+            else {
+                System.out.println("Ugyldig valg!");
+            }
+            skjulK();
+            
         }
     }
     public void plasserKortB(){
@@ -128,6 +147,50 @@ public final class Kabal{
 
         bKNr = bunke.isEmpty() ? -1 : Math.min(bKNr, bunke.size() - 1);
 
+    }
+    public void flyttKortMellomBunker(){
+        System.out.println("hvilken rad vil du flytte fra(radNr 0-6)");
+        int radG = sc.nextInt();
+        while (radG < 0 || radG > 6 || brett[radG].isEmpty()) {
+            System.out.println("Ugyldig rad!");
+            System.out.println("hvilken rad vil du flytte fra(radNr 0-6)");
+            radG = sc.nextInt();
+        }
+
+        System.out.println("hvilket kort vil du flytte fra (indeks 0-" + (brett[radG].size()-1) + ")");
+        int kortIndeks = sc.nextInt();
+        while (kortIndeks < 0 || kortIndeks >= brett[radG].size()) {
+            System.out.println("Ugyldig indeks!");
+            System.out.println("hvilket kort vil du flytte fra (indeks 0-" + (brett[radG].size()-1) + ")");
+            kortIndeks = sc.nextInt();
+        }
+        for (int i = kortIndeks; i < brett[radG].size(); i++) {
+            if (!brett[radG].get(i).visesForside()) {
+                System.out.println("Kan ikke flytte skjulte kort!");
+                return;
+            }
+        }
+        System.out.println("hvor vil du plassere(radNr 0-6)");
+        int radP = sc.nextInt();
+        while (radP < 0 || radP > 6) {
+            System.out.println("Ugyldig målrad!");
+            System.out.println("hvor vil du plassere(radNr 0-6)");
+            radP = sc.nextInt();
+    }
+
+        Kort førsteKort = brett[radG].get(kortIndeks);
+        if (!sjekkPlassLov(førsteKort, radP)) {
+        System.out.println("Ulovlig plassering!");
+        return;
+    }
+        
+        if(sjekkPlassLov(førsteKort, radP)&& førsteKort.visesForside()){
+            ArrayList<Kort> flyttet = new ArrayList<>();
+            while (kortIndeks < brett[radG].size()) {
+            flyttet.add(brett[radG].remove(kortIndeks));
+            }
+            brett[radP].addAll(flyttet);
+        }
     }
 
     String[] sortene = {"hearts","clubs","diamonds","spades"};
@@ -162,7 +225,7 @@ public final class Kabal{
 
     public static void main(String[] args) {
         Kabal kabal = new Kabal();
-        kabal.trekk3KortB();
+        kabal.brukerinput();
         
 
     }
