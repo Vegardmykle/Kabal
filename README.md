@@ -14,9 +14,10 @@ Dette prosjektet er et program for å spille kabal (solitaire), utviklet i java.
    ```bash
    git clone https://github.com/Vegardmykle/Kabal.git
    ```
-2. Kjør programmet med Python:
+2. Bygg og kjør med Java:
    ```bash
-   python kabal.py
+   javac Kabal.java
+   java Kabal
    ```
 
 ## Lisens
