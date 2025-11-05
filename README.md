@@ -1,6 +1,6 @@
 # Kabal
 
-Dette prosjektet er et program for å spille kabal (solitaire), utviklet i Python. Her kan du nyte klassisk kabal på din datamaskin, med enkel grafikk og brukervennlig grensesnitt.
+Dette prosjektet er et program for å spille kabal (solitaire), utviklet i java. Her kan du nyte klassisk kabal på din datamaskin, med enkel grafikk og brukervennlig grensesnitt.
 
 ## Funksjoner
 
